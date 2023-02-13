@@ -8,11 +8,10 @@ FROM golang:1.17-buster AS build
 RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
 WORKDIR /app
 ARG UID
-RUN adduser lassi -u ${UID:-1000} && chown -R lassi /app
-USER lassi
+RUN adduser test -u ${UID:-1000} && chown -R test /app
+USER test
 ENV CGO_ENABLED=0
 ENV GIN_MODE=release
-ENV LASSI_ENV=production
 COPY go.* ./
 RUN go mod download
 COPY . ./
