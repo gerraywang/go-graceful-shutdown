@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: debug
+    volumes:
+      - .:/app # ホットローディングのために監視するディレクトリの指定
+      - ./logs:/logs
+    ports:
+      - "8080:8080"
+    tty: true
+    stdin_open: true
+  db:
+    image: postgres:12.3-alpine
+    container_name: db-container1
+    ports:
+      - "5432:5432"
+    environment:
+      TZ: "Asia/Tokyo"
+      LANG: ja_JP.utf8
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sa
+      POSTGRES_DB: lassi
+
+  # cloud-sql-proxy:
+  #   container_name: cloud-sql-proxy
+  #   image: gcr.io/cloudsql-docker/gce-proxy:1.31.2
+  #   volumes:
+  #     - ./credentials/credential_gcs.json:/credentials/credential_gcs.json
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     TZ: Asia/Tokyo
+  #   restart: always
+  #   command: "/cloud_sql_proxy -instances=clean-room-dev:asia-northeast1:cleanroom-dev-93820432=tcp:0.0.0.0:5432 -credential_file=/credentials/credential_gcs.json"
+
