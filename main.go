@@ -20,6 +20,8 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	log.Println("starting server")
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hello", hello)
 
@@ -28,11 +30,11 @@ func main() {
 		Handler: mux,
 	}
 
-	log.Println("starting server")
-	if err := server.ListenAndServe(); err != nil {
-		log.Fatal(err)
-	}
-
+	go func() {
+		if err := server.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
